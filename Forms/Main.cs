@@ -105,6 +105,7 @@ namespace HeavyDuck.Dnd.InitiativeBuddy.Forms
             grid.Columns["Initiative"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             grid.Columns["InitiativeBonus"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             grid.Columns["InitiativeBonus"].DefaultCellStyle.Format = "(+0)";
+            grid.Columns["InitiativeBonus"].DefaultCellStyle.ForeColor = Color.Gray;
             grid.Columns["AC"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             grid.Columns["Fortitude"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             grid.Columns["Reflex"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
