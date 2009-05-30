@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -11,6 +12,7 @@ namespace HeavyDuck.Dnd.InitiativeBuddy
 {
     internal abstract class InitiativeTableEntry
     {
+        private static readonly Regex m_number_regex = new Regex(@"[\+\-]?\d+");
 
         public InitiativeTableEntry(string description, string html)
         {
@@ -36,12 +38,66 @@ namespace HeavyDuck.Dnd.InitiativeBuddy
                 return null;
             }
         }
+
+        protected static int TolerantParse(string value)
+        {
+            Match match = m_number_regex.Match(value);
+            int result;
+
+            if (match.Success && int.TryParse(match.Value, out result))
+                return result;
+            else
+                return 0;
+        }
+    }
+
+    internal class PCInitiativeTableEntry : InitiativeTableEntry
+    {
+        public PCInitiativeTableEntry(string path)
+            : base("PC", null)
+        {
+            XPathDocument doc;
+            XPathNavigator nav;
+
+            // read the file
+            using (FileStream fs = File.OpenRead(path))
+            {
+                doc = new XPathDocument(fs);
+                nav = doc.CreateNavigator();
+            }
+
+            // pull stuff from it
+            this.Description = nav.SelectSingleNode("/D20Character/CharacterSheet/Details/name").Value.Trim();
+            this.InitiativeBonus = GetStat(nav, "initiative");
+            this.AC = GetStat(nav, "AC");
+            this.Fortitude = GetStat(nav, "Fortitude Defense");
+            this.Reflex = GetStat(nav, "Reflex Defense");
+            this.Will = GetStat(nav, "Will Defense");
+        }
+
+        public override bool IsCombatant
+        {
+            get { return true; }
+        }
+
+        public override Image Image
+        {
+            get { return Properties.Resources.user; }
+        }
+
+        private static int GetStat(XPathNavigator nav, string name)
+        {
+            XPathNavigator node = nav.SelectSingleNode("/D20Character/CharacterSheet/StatBlock/Stat[@name = '" + name + "']/@value");
+
+            if (node != null)
+                return TolerantParse(node.Value);
+            else
+                return 0;
+        }
     }
 
     internal class MonsterInitiativeTableEntry : InitiativeTableEntry
     {
-        private static readonly Regex m_number_regex = new Regex(@"[\+\-]?\d+");
-
         public MonsterInitiativeTableEntry(string description, string html)
             : base(description, html)
         {
@@ -101,17 +157,6 @@ namespace HeavyDuck.Dnd.InitiativeBuddy
         public override Image Image
         {
             get { return Properties.Resources.bug; }
-        }
-
-        protected static int TolerantParse(string value)
-        {
-            Match match = m_number_regex.Match(value);
-            int result;
-
-            if (match.Success && int.TryParse(match.Value, out result))
-                return result;
-            else
-                return 0;
         }
     }
 }

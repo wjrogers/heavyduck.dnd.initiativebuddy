@@ -51,6 +51,13 @@ namespace HeavyDuck.Dnd.InitiativeBuddy.Forms
             // get a name for the new encounter
             if (InputDialog.ShowDialog(this, "New Encounter", "Encounter name?", ref name) != DialogResult.OK)
                 return;
+
+            // check the name is a name
+            if (string.IsNullOrEmpty(name) || name.Trim().Length < 2)
+            {
+                MessageBox.Show(this, "Encounter names must be at least 2 characters long", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             
             // create entry list
             entries = new ObjectBindingList<InitiativeTableEntry>();
@@ -63,17 +70,17 @@ namespace HeavyDuck.Dnd.InitiativeBuddy.Forms
             grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             grid.MultiSelect = false;
             grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            GridHelper.AddColumn(grid, "Initiative", " ");
+            GridHelper.AddColumn(grid, "Initiative", "Init");
             GridHelper.AddColumn(grid, "InitiativeBonus", " ");
             GridHelper.AddColumn(grid, new DataGridViewImageColumn(), "Image", " ");
+            GridHelper.AddColumn(grid, "Description", "Description");
             GridHelper.AddColumn(grid, "AC", "AC");
             GridHelper.AddColumn(grid, "Fortitude", "Fort");
             GridHelper.AddColumn(grid, "Reflex", "Ref");
             GridHelper.AddColumn(grid, "Will", "Will");
-            GridHelper.AddColumn(grid, "Description", "Description");
             grid.Columns["Initiative"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             grid.Columns["InitiativeBonus"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            grid.Columns["InitiativeBonus"].DefaultCellStyle.Format = "(+#)";
+            grid.Columns["InitiativeBonus"].DefaultCellStyle.Format = "(+0)";
             grid.Columns["AC"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             grid.Columns["Fortitude"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             grid.Columns["Reflex"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
@@ -107,6 +114,30 @@ namespace HeavyDuck.Dnd.InitiativeBuddy.Forms
 
         private void ToolStrip_AddPC(object sender, EventArgs e)
         {
+            ObjectBindingList<InitiativeTableEntry> list = GetCurrentList();
+            string path;
+
+            // let the user browse for a file
+            using (OpenFileDialog d = new OpenFileDialog())
+            {
+                d.CheckFileExists = true;
+                d.Filter = "Character Builder Files (*.dnd4e)|*.dnd4e";
+
+                if (d.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                path = d.FileName;
+            }
+
+            // read the file
+            try
+            {
+                list.Add(new PCInitiativeTableEntry(path));
+            }
+            catch (Exception ex)
+            {
+                ShowException(ex);
+            }
         }
 
         private void ToolStrip_AddMonster(object sender, EventArgs e)
@@ -134,7 +165,7 @@ namespace HeavyDuck.Dnd.InitiativeBuddy.Forms
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(this, ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ShowException(ex);
                 }
             }
         }
@@ -184,6 +215,11 @@ namespace HeavyDuck.Dnd.InitiativeBuddy.Forms
             toolstrip.Items["remove_encounter"].Enabled = encounter_tabs.SelectedTab != null;
             toolstrip.Items["add_pc"].Enabled = encounter_tabs.SelectedTab != null;
             toolstrip.Items["add_monster"].Enabled = encounter_tabs.SelectedTab != null;
+        }
+
+        private void ShowException(Exception ex)
+        {
+            MessageBox.Show(this, ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         #endregion
