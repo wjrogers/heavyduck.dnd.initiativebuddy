@@ -22,6 +22,7 @@ namespace HeavyDuck.Dnd.InitiativeBuddy.Forms
             InitializeComponent();
 
             this.Load += new EventHandler(Main_Load);
+            this.FormClosed += new FormClosedEventHandler(Main_FormClosed);
         }
 
         #region Event Handlers
@@ -37,8 +38,17 @@ namespace HeavyDuck.Dnd.InitiativeBuddy.Forms
             toolstrip.Items.Add(new ToolStripButton("Add PC", Properties.Resources.user_add, ToolStrip_AddPC, "add_pc"));
             toolstrip.Items.Add(new ToolStripButton("Add Monster", Properties.Resources.bug_add, ToolStrip_AddMonster, "add_monster"));
 
+            // load cookies
+            m_compendium.LoadCookies();
+
             // initialize button state
             UpdateButtons();
+        }
+
+        private void Main_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // persist cookies
+            m_compendium.SaveCookies();
         }
 
         private void ToolStrip_NewEncounter(object sender, EventArgs e)
