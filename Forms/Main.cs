@@ -15,7 +15,7 @@ namespace HeavyDuck.Dnd.InitiativeBuddy.Forms
 {
     public partial class Main : Form
     {
-        private CompendiumHelper m_compendium = null;
+        private CompendiumHelper m_compendium = new CompendiumHelper();
 
         public Main()
         {
