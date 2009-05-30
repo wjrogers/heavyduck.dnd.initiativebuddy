@@ -46,17 +46,17 @@
             this.browser.AllowWebBrowserDrop = false;
             this.browser.Dock = System.Windows.Forms.DockStyle.Right;
             this.browser.IsWebBrowserContextMenuEnabled = false;
-            this.browser.Location = new System.Drawing.Point(594, 25);
+            this.browser.Location = new System.Drawing.Point(484, 25);
             this.browser.MinimumSize = new System.Drawing.Size(20, 20);
             this.browser.Name = "browser";
             this.browser.ScriptErrorsSuppressed = true;
-            this.browser.Size = new System.Drawing.Size(340, 439);
+            this.browser.Size = new System.Drawing.Size(450, 439);
             this.browser.TabIndex = 1;
             // 
             // splitter1
             // 
             this.splitter1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.splitter1.Location = new System.Drawing.Point(591, 25);
+            this.splitter1.Location = new System.Drawing.Point(481, 25);
             this.splitter1.Name = "splitter1";
             this.splitter1.Size = new System.Drawing.Size(3, 439);
             this.splitter1.TabIndex = 2;
@@ -68,7 +68,7 @@
             this.encounter_tabs.Location = new System.Drawing.Point(0, 25);
             this.encounter_tabs.Name = "encounter_tabs";
             this.encounter_tabs.SelectedIndex = 0;
-            this.encounter_tabs.Size = new System.Drawing.Size(591, 439);
+            this.encounter_tabs.Size = new System.Drawing.Size(481, 439);
             this.encounter_tabs.TabIndex = 3;
             // 
             // Main

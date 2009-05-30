@@ -13,11 +13,27 @@ namespace HeavyDuck.Dnd.InitiativeBuddy
     internal abstract class InitiativeTableEntry
     {
         private static readonly Regex m_number_regex = new Regex(@"[\+\-]?\d+");
+        private static readonly Dictionary<int, bool> m_tiebreakers = new Dictionary<int, bool>();
+        private static readonly Random m_random = new Random();
+
+        private int m_tiebreaker = 0;
+
+        static InitiativeTableEntry()
+        {
+            m_tiebreakers[0] = true;
+        }
 
         public InitiativeTableEntry(string description, string html)
         {
             this.Description = description;
             this.Html = html;
+
+            // assign a unique tiebreaker value
+            while (m_tiebreakers.ContainsKey(m_tiebreaker))
+                m_tiebreaker = m_random.Next();
+
+            // mark this one taken
+            m_tiebreakers[m_tiebreaker] = true;
         }
 
         public int Initiative { get; set; }
@@ -28,6 +44,14 @@ namespace HeavyDuck.Dnd.InitiativeBuddy
         public int Fortitude { get; set; }
         public int Reflex { get; set; }
         public int Will { get; set; }
+
+        /// <summary>
+        /// In the case of equal rolls and bonuses, this number determines initiative order.
+        /// </summary>
+        public int Tiebreaker
+        {
+            get { return m_tiebreaker; }
+        }
 
         public abstract bool IsCombatant { get; }
 
