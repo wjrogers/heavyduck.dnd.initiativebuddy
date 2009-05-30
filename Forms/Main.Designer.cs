@@ -43,7 +43,6 @@
             // 
             // browser
             // 
-            this.browser.AllowNavigation = false;
             this.browser.AllowWebBrowserDrop = false;
             this.browser.Dock = System.Windows.Forms.DockStyle.Right;
             this.browser.IsWebBrowserContextMenuEnabled = false;
