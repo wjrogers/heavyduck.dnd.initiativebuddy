@@ -92,7 +92,7 @@ namespace HeavyDuck.Dnd.InitiativeBuddy
 
             // pull stuff from it
             this.Description = nav.SelectSingleNode("/D20Character/CharacterSheet/Details/name").Value.Trim();
-            this.InitiativeBonus = GetStat(nav, "initiative");
+            this.InitiativeBonus = GetStat(nav, "Initiative");
             this.AC = GetStat(nav, "AC");
             this.Fortitude = GetStat(nav, "Fortitude Defense");
             this.Reflex = GetStat(nav, "Reflex Defense");
